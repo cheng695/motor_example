@@ -70,13 +70,17 @@ void MotorUpdate(Motor_t *motor, const uint8_t data[8])
 {
     float last_angle;
 
-    if (!Motor_ReceiveFeedback(motor, data) ||
+    if (motor == NULL || data == NULL ||
         motor->params.reduction_ratio <= 0.0f ||
         motor->params.encoder_resolution <= 0.0f ||
         motor->params.feedback_current_max <= 0.0f)
     {
         return;
     }
+
+    const bool first_feedback = !motor->received;
+    if (!Motor_ReceiveFeedback(motor, data))
+        return;
 
     last_angle = motor->angle_deg;
 
@@ -93,6 +97,8 @@ void MotorUpdate(Motor_t *motor, const uint8_t data[8])
                               motor->params.reduction_ratio;
     /* 输出轴累计角度增量（弧度）= 输出轴累计角度增量（度）× π / 180° */
     motor->total_angle_rad = motor->total_angle_deg * MOTOR_PI / 180.0f;
+    if (first_feedback)
+        motor->initial_angle_rad = motor->total_angle_rad;
 
 
     /* 实际电流（A）= 反馈电流原始值 × 电机最大电流（A）/ 反馈电流最大值 */
@@ -152,6 +158,7 @@ float getAngleDeg(const Motor_t *motor) { return motor->angle_deg; }
 float getAngleRad(const Motor_t *motor) { return motor->angle_rad; }
 float getTotalAngleDeg(const Motor_t *motor) { return motor->total_angle_deg; }
 float getTotalAngleRad(const Motor_t *motor) { return motor->total_angle_rad; }
+float getInitialAngleRad(const Motor_t *motor) { return motor->initial_angle_rad; }
 float getSpeedRpm(const Motor_t *motor) { return motor->speed_rpm; }
 float getSpeedRadS(const Motor_t *motor) { return motor->speed_rad_s; }
 float getCurrentA(const Motor_t *motor) { return motor->current_a; }

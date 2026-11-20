@@ -1,0 +1,6 @@
+{
+    "clangd.arguments": [
+        "--query-driver=**/arm-none-eabi-gcc,**/arm-none-eabi-gcc.exe,**/arm-none-eabi-g++,**/arm-none-eabi-g++.exe"
+    ],
+    "cmake.useCMakePresets": "always"
+}

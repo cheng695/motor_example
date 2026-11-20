@@ -8,7 +8,7 @@ typedef struct
     float ki;
     float kd;
     float output_limit;                  // 输出的最大绝对值
-    float integral_limit;                // 积分累积值的最大绝对值，0 表示不限幅
+    float integral_limit;                // 积分累积值（误差×秒）的最大绝对值，0 表示不限幅
     float integral_separation_threshold; // 误差绝对值达到该值时停止累积，0 表示不分离
 
     float target;
@@ -25,7 +25,8 @@ typedef struct
 void PID_Init(PID_t *pid, float kp, float ki, float kd, float output_limit,
               float integral_limit, float integral_separation_threshold);
 
-float PID_Update(PID_t *pid, float target, float feedback);
+/* dt 为两次更新的时间间隔，单位秒；非正数或非有限值不更新状态。 */
+float PID_Update(PID_t *pid, float target, float feedback, float dt);
 void PID_Reset(PID_t *pid);
 
 void SetTarget(PID_t *pid, float target);

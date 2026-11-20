@@ -4,7 +4,7 @@
 #include "user_uart.h"
 #include "tim.h"
 #include "usart.h"
-#include "vofa.h"
+#include "tool.h"
 #include "task.h"
 
 uint8_t remote_rx_buffer[DT7_RX_FRAME_SIZE];

@@ -2,7 +2,8 @@
 #include <stdint.h>
 
 Can_RX Can_RX_;
-
+Can_TX Can_TX_1;
+Can_TX Can_TX_2;
 
 /**
  * @brief CAN过滤器配置

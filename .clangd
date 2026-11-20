@@ -1,2 +1,10 @@
 CompileFlags:
   CompilationDatabase: build/Debug
+  Remove: [-fstack-usage, -fcyclomatic-complexity]
+
+---
+# This configuration header normally gets its device context from stm32f4xx.h.
+If:
+  PathMatch: Core/Inc/stm32f4xx_hal_conf\.h
+CompileFlags:
+  Add: [-include, stm32f4xx.h]

@@ -1,25 +1,6 @@
 #include "pid.h"
 #include <math.h>
-
-/********************************* 工具函数 ********************************************/
-
-/**
- * @brief 限幅函数
- * @param value 输入值
- * @param min 最小值
- * @param max 最大值
- * @return 限幅后的值
- */
-static float clamp(float value, float min, float max)
-{
-    if (value > max)
-        return max;
-
-    if (value < -min)
-        return -min;
-
-    return value;
-}
+#include "tool.h"
 
 /********************************* 主要函数 ********************************************/
 
@@ -48,10 +29,15 @@ void PID_Init(PID_t *pid, float kp, float ki, float kd, float output_limit,
  * @param pid PID参数结构体指针
  * @param target 期望值
  * @param feedback 反馈值
+ * @param dt 更新间隔，单位秒，必须为正的有限值
  * @return 输出值
  */
-float PID_Update(PID_t *pid, float target, float feedback)
+float PID_Update(PID_t *pid, float target, float feedback, float dt)
 {
+    if (!(dt > 0.0f) || !isfinite(dt))
+        return pid->output;
+
+    const float previous_integral = pid->integral;
     SetTarget(pid, target);
     SetFeedback(pid, feedback);
 
@@ -65,7 +51,7 @@ float PID_Update(PID_t *pid, float target, float feedback)
     // 当阈值为0时，禁用积分隔离功能，积分始终工作
     if (pid->integral_separation_threshold == 0.0f || fabsf(pid->error) < pid->integral_separation_threshold)
     {
-        pid->integral += pid->error;
+        pid->integral += pid->error * dt;
         if (pid->integral_limit > 0.0f)
         {
             pid->integral = clamp(pid->integral, -pid->integral_limit, pid->integral_limit);
@@ -75,7 +61,7 @@ float PID_Update(PID_t *pid, float target, float feedback)
     pid->i_out = pid->ki * pid->integral;
 
     // 微分项
-    pid->d_out = pid->kd * (pid->error - pid->previous_error);
+    pid->d_out = pid->kd * (pid->error - pid->previous_error) / dt;
 
     // 计算输出
     pid->output = pid->p_out + pid->i_out + pid->d_out;
@@ -86,12 +72,10 @@ float PID_Update(PID_t *pid, float target, float feedback)
     if ((pid->output >=  pid->output_limit && pid->error > 0.0f) ||
         (pid->output <= -pid->output_limit && pid->error < 0.0f))
     {
-        pid->integral -= pid->error;
-        // 确保积分不超出限制
-        if (pid->integral_limit > 0.0f)
-        {
-            pid->integral = clamp(pid->integral, -pid->integral_limit, pid->integral_limit);
-        } 
+        pid->integral = previous_integral;
+        pid->i_out = pid->ki * pid->integral;
+        pid->output = clamp(pid->p_out + pid->i_out + pid->d_out,
+                            -pid->output_limit, pid->output_limit);
     }
 
     pid->previous_error = pid->error;

@@ -33,6 +33,7 @@ typedef struct
     float angle_rad;            // 转子单圈角度，单位弧度 
     float total_angle_deg;      // 输出轴累计角度，单位度 
     float total_angle_rad;      // 输出轴累计角度，单位弧度
+    float initial_angle_rad;    // 首次有效反馈的输出轴累计角度，初始化后只记录一次
     float speed_rpm;            // 输出轴转速，单位 rpm 
     float speed_rad_s;          // 输出轴角速度，单位 rad/s 
     float current_a;            // 电流，单位 A 
@@ -65,6 +66,8 @@ float getAngleRad(const Motor_t *motor);
 float getTotalAngleDeg(const Motor_t *motor);
 /* 获取电机输出轴累计角度，单位弧度。*/
 float getTotalAngleRad(const Motor_t *motor);
+/* 获取首次反馈时的累计角度，与 getTotalAngleRad 使用相同坐标，单位弧度。 */
+float getInitialAngleRad(const Motor_t *motor);
 /* 获取电机输出轴转速，单位 rpm。*/
 float getSpeedRpm(const Motor_t *motor);
 /* 获取电机输出轴角速度，单位 rad/s。*/

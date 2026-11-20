@@ -1,7 +1,4 @@
-#ifndef VOFA_H
-#define VOFA_H
-
-#include <stdint.h>
+#include "tool.h"
 #include <string.h>
 
 uint8_t send_str2[sizeof(float) * 10];
@@ -15,4 +12,21 @@ void vofa_send(float x1, float x2, float x3, float x4, float x5, float x6, float
     *((uint32_t*)&send_str2[sizeof(float) * 9]) = 0x7F800000; 
 }
 
-#endif
+
+/**
+ * @brief 限幅函数
+ * @param value 输入值
+ * @param min 最小值
+ * @param max 最大值
+ * @return 限幅后的值
+ */
+float clamp(float value, float min, float max)
+{
+    if (value > max)
+        return max;
+
+    if (value < min)
+        return min;
+
+    return value;
+}
