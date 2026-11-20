@@ -1,0 +1,29 @@
+# Build output and CMake caches
+/build/
+/cmake-build-*/
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/CMakeUserPresets.json
+/compile_commands.json
+*.o
+*.obj
+*.a
+*.elf
+*.hex
+*.bin
+*.map
+*.d
+*.su
+*.gcda
+*.gcno
+
+# Local editor caches and temporary files
+/.cache/
+/.idea/
+*.swp
+*.swo
+*~
+*.log
+.DS_Store
+Thumbs.db
