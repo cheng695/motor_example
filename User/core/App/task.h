@@ -2,6 +2,7 @@
 #define APP_TASK_H
 
 #include <stdint.h>
+#include "pid.h"
 
 #define DT7_RX_FRAME_SIZE 18U
 extern uint8_t remote_rx_buffer[DT7_RX_FRAME_SIZE];
@@ -17,6 +18,14 @@ typedef struct
     float out_gimbal_yaw;
     float out_gimbal_pitch;
 }Output;
+
+extern Target gimbal_target;
+extern Output gimbal_output;
+
+extern PID_t pid_yaw_angle;
+extern PID_t pid_pitch_angle;
+extern PID_t pid_yaw_velocity;
+extern PID_t pid_pitch_velocity;
 
 /* 外设初始化后调用一次，随后由 TIM1 更新中断调用 TaskUpdate()。 */
 void Task_Init(void);

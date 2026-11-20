@@ -2,7 +2,6 @@
 #include "fsm.h"
 #include "DT7.h"
 #include "motor.h"
-#include "pid.h"
 #include "user_can.h"
 #include "user_uart.h"
 #include <math.h>
@@ -13,10 +12,10 @@ Output gimbal_out;
 
 static Motor_t motor[2];
 
-static PID_t pid_yaw_angle;
-static PID_t pid_pitch_angle;
-static PID_t pid_yaw_velocity;
-static PID_t pid_pitch_velocity;
+PID_t pid_yaw_angle;
+PID_t pid_pitch_angle;
+PID_t pid_yaw_velocity;
+PID_t pid_pitch_velocity;
 
 void Task_Init(void)
 {

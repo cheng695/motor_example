@@ -4,6 +4,8 @@
 #include "user_uart.h"
 #include "tim.h"
 #include "usart.h"
+#include "vofa.h"
+#include "task.h"
 
 uint8_t remote_rx_buffer[DT7_RX_FRAME_SIZE];
 
@@ -13,6 +15,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     if (htim == &htim1)
     {
         TaskUpdate();
+        vofa_send(gimbal_target.target_gimbal_yaw, 
+                    pid_yaw_angle.feedback, 
+                    pid_yaw_angle.output, 
+                    pid_yaw_velocity.feedback, 
+                    gimbal_target.target_gimbal_pitch, 
+                    pid_pitch_angle.feedback, 
+                    pid_pitch_angle.output, 
+                    pid_pitch_velocity.feedback, 
+                    0.0f);
+        Transmit_dma(&huart3, send_str2, sizeof(send_str2));
     }
 }
 
